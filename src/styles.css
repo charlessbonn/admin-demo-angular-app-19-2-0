@@ -1,1 +1,27 @@
 /* You can add global styles to this file, and also import other style files */
+
+@media (min-width: 1280px) {
+    .table-width {
+        width: 100%;
+    }
+}
+
+@media (max-width: 1279px) {
+    .table-width {
+        width: 1280px;
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}

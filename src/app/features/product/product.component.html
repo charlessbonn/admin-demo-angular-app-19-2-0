@@ -1,0 +1,77 @@
+<div class="py-2 py-md-4 py-lg-5 px-2 px-md-4 px-xxl-5" style="min-height: 100dvh;">
+    <div class="row align-items-center justify-content-between m-0 p-0">
+        <div class="col-12 col-lg-6 m-0 p-0">
+            <h2>Product Management</h2>
+        </div>
+        <div class="col-12 col-lg-6 m-0 p-0 text-lg-end">
+            <div class="d-inline me-4" ngbDropdown>
+                <button type="button" class="btn btn-outline-info" id="dropdownBasic1" ngbDropdownToggle>
+                    <i class="fa-solid fa-user me-2"></i>
+                </button>
+                <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                    <button ngbDropdownItem>Create Product</button>
+                    <button ngbDropdownItem>Delete Product</button>
+                </div>
+            </div>
+            <button class="btn btn-info text-white">
+                Refresh list
+                <i class="fa-solid fa-rotate-right ms-4"></i>
+            </button>
+        </div>
+    </div>
+    <hr />
+    <!-- Loading -->
+    <div *ngIf="loading | async" class="py-4">
+        <p class="text-center">
+            Loading products ...
+            <i class="animate-spin fa-solid fa-spinner ms-4"></i>
+        </p>
+    </div>
+
+    <!-- When not loading -->
+    <ng-container *ngIf="!(loading | async)">
+        <ng-container *ngIf="(displayedProducts | async) as list">
+
+            <!-- No products -->
+            <div *ngIf="list.length === 0" class="py-5">
+                <p class="">No products found.</p>
+            </div>
+
+            <!-- Show products -->
+            <div *ngIf="list.length !== 0" style="overflow-x: auto;">
+                <table class="table table-width">
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                <input class="me-2 form-check-input" type="checkbox"
+                                    (change)="onSelectAllProducts($event)" />
+                            </th>
+                            <th scope="col">Image</th>
+                            <th scope="col">ID</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Activation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let product of list">
+                            <td>
+                                <input class="me-2 form-check-input" type="checkbox"
+                                    (change)="onSelectProduct($event, product)" (click)="$event.stopPropagation()" />
+                            </td>
+                            <td><img [src]="product.toString()" style="width: 100px; height: 100px;" /></td>
+                            <th scope="row">{{ product.toString() }}</th>
+                            <td>{{ product.toString() }}</td>
+                            <td>{{ product.toString() }}</td>
+                            <td>{{ product.toString() }}</td>
+                            <td>{{ product.toString() }}</td>
+                            <td>{{ product.toString() }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </ng-container>
+    </ng-container>
+</div>

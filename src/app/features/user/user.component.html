@@ -1,0 +1,119 @@
+<ng-template #userModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">User Info</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+    </div>
+    <form #form="ngForm" class="w-100 p-0" (ngSubmit)="onUpdateUser()">
+        <div class="modal-body">
+            <h6 class=" my-2">Personal Information</h6>
+            <img class="d-block my-2" [src]="userData.image" style="width: 100px; height: 100px;" />
+            <input type="text" name="firstname" class="form-control my-1" placeholder="First name" required
+                [(ngModel)]="userData.firstname" #firstnameCtrl="ngModel" />
+            <input type="text" name="lastname" class="form-control my-1" placeholder="Last name" required
+                [(ngModel)]="userData.lastname" #lastnameCtrl="ngModel" />
+            <input type="email" name="email" class="form-control my-1" placeholder="Email" required
+                [(ngModel)]="userData.email" #emailCtrl="ngModel" />
+            <h6 class=" my-2">User Status</h6>
+            <div ngbDropdown>
+                <button type="button" class="btn btn-light border border-secondary" id="dropdownBasic1"
+                    ngbDropdownToggle>
+                    <span class="text-secondary me-5">{{ userData.userStatus?.toUpperCase() ?? "Choose" }}</span>
+                </button>
+                <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                    <button ngbDropdownItem (click)="onChangeUserStatus('pending')">Pending</button>
+                    <button ngbDropdownItem (click)="onChangeUserStatus('approved')">Approved</button>
+                    <button ngbDropdownItem (click)="onChangeUserStatus('rejected')">Rejected</button>
+                </div>
+            </div>
+            <h6 class=" my-2">User Activation</h6>
+            <div class="form-check">
+                <input class="form-check-input" name="isActive" type="checkbox" value="" id="flexCheckDefault"
+                    (change)="onActivateUser($event)" [(ngModel)]="userData.isActive" #isActiveCtrl="ngModel">
+                <label class="form-check-label" for="flexCheckDefault">
+                    Active user
+                </label>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button *ngIf="!(loading | async)" class="btn btn-info text-white" type="submit">Update</button>
+            <button *ngIf="(loading | async)" class="btn btn-secondary text-white">Update</button>
+        </div>
+    </form>
+</ng-template>
+<div class="py-2 py-md-4 py-lg-5 px-2 px-md-4 px-xxl-5" style="min-height: 100dvh;">
+    <div class="row align-items-center justify-content-between m-0 p-0">
+        <div class="col-12 col-lg-6 m-0 p-0">
+            <h2>User Management</h2>
+        </div>
+        <div class="col-12 col-lg-6 m-0 p-0 text-lg-end">
+            <div class="d-inline me-4" ngbDropdown>
+                <button type="button" class="btn btn-outline-info" id="dropdownBasic1" ngbDropdownToggle>
+                    <i class="fa-solid fa-user me-2"></i>
+                </button>
+                <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                    <button ngbDropdownItem (click)="onCreate()">Create User</button>
+                    <button ngbDropdownItem (click)="onDelete()">Delete User</button>
+                </div>
+            </div>
+            <button class="btn btn-info text-white" (click)="getUsers()">
+                Refresh list
+                <i class="fa-solid fa-rotate-right ms-4"></i>
+            </button>
+        </div>
+    </div>
+    <hr />
+    <!-- Loading -->
+    <div *ngIf="loading | async" class="py-4">
+        <p class="text-center">
+            Loading users ...
+            <i class="animate-spin fa-solid fa-spinner ms-4"></i>
+        </p>
+    </div>
+
+    <!-- When not loading -->
+    <ng-container *ngIf="!(loading | async)">
+        <ng-container *ngIf="(displayedUsers | async) as list">
+
+            <!-- No products -->
+            <div *ngIf="list.length === 0" class="py-5">
+                <p class="">No users found.</p>
+            </div>
+
+            <!-- Show products -->
+            <div *ngIf="list.length !== 0" style="overflow-x: auto;">
+                <table class="table table-width">
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                <input class="me-2 form-check-input" type="checkbox"
+                                    (change)="onSelectAllUsers($event)" />
+                            </th>
+                            <th scope="col">Profile</th>
+                            <th scope="col">ID</th>
+                            <th scope="col">First Name</th>
+                            <th scope="col">Last Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">User Status</th>
+                            <th scope="col">Activation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let user of list" (click)="onViewUser(userModal, user)">
+                            <td>
+                                <input class="me-2 form-check-input" type="checkbox"
+                                    (change)="onSelectUser($event, user)" (click)="$event.stopPropagation()" />
+                            </td>
+                            <td><img [src]="user.image" style="width: 100px; height: 100px;" /></td>
+                            <th scope="row">{{ user._id?.toString() }}</th>
+                            <td>{{ user.firstname }}</td>
+                            <td>{{ user.lastname }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.userStatus }}</td>
+                            <td>{{ user.isActive }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </ng-container>
+    </ng-container>
+</div>
